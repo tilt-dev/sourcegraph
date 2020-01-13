@@ -121,5 +121,6 @@ export PATH="$PWD/.bin:$PWD/node_modules/.bin:$PATH"
 yarn run build-ts || true
 
 printf >&2 "\nStarting all binaries...\n\n"
-export GOREMAN="goreman --set-ports=false --exit-on-error -f dev/Procfile"
-exec $GOREMAN start
+tilt up
+# export GOREMAN="goreman --set-ports=false --exit-on-error -f dev/Procfile"
+# exec $GOREMAN start
