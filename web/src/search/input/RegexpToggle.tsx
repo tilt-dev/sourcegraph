@@ -8,7 +8,7 @@ import { filter } from 'rxjs/operators'
 import { PatternTypeProps } from '..'
 import { FiltersToTypeAndValue } from '../../../../shared/src/search/interactive/util'
 
-interface RegexpToggleProps extends PatternTypeProps {
+export interface RegexpToggleProps extends PatternTypeProps {
     navbarSearchQuery: string
     history: H.History
     filtersInQuery?: FiltersToTypeAndValue

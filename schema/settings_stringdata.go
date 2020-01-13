@@ -28,6 +28,12 @@ const SettingsSchemaJSON = `{
           "type": "boolean",
           "default": false,
           "!go": { "pointer": true }
+        },
+        "smartSearchField": {
+          "description": "Enables displaying a search field that provides syntax highlighting, hover tooltips and diagnostics for search queries.",
+          "type": "boolean",
+          "default": false,
+          "!go": { "pointer": true }
         }
       },
       "group": "Experimental"
