@@ -88,8 +88,3 @@ type ulimit > /dev/null && ulimit -n 10000 || true
 
 # Put .bin:node_modules/.bin onto the $PATH
 export PATH="$PWD/.bin:$PWD/node_modules/.bin:$PATH"
-
-printf >&2 "\nStarting all binaries...\n\n"
-tilt up
-# export GOREMAN="goreman --set-ports=false --exit-on-error -f dev/Procfile"
-# exec $GOREMAN start
