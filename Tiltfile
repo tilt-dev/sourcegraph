@@ -29,7 +29,14 @@ lr('zoekt-indexserver-0', serve_cmd='./dev/zoekt/wrapper indexserver 0')
 lr('zoekt-indexserver-1', serve_cmd='./dev/zoekt/wrapper indexserver 1')
 lr('zoekt-webserver-0', serve_cmd='./dev/zoekt/wrapper webserver 0')
 lr('zoekt-webserver-1', serve_cmd='./dev/zoekt/wrapper webserver 1')
-lr('keycloak', serve_cmd='./dev/auth-provider/keycloak.sh')
+
+# if keycloak isn't supposed to run, specify it as a cmd instead of a serve_cmd
+keycloak_test = str(local('dev/env.sh && ( if [ -n "$NO_KEYCLOAK" ]; then echo "echo Not using Keycloak. Keycloak authentication providers will not work."; fi; if [ -z "$ENTERPRISE" ]; then echo Not using Keycloak. Only runs in enterprise mode.; fi )'))
+if keycloak_test.find("Not using Keycloak") == -1:
+  lr('keycloak', serve_cmd='./dev/auth-provider/keycloak.sh')
+else:
+  lr('keycloak', cmd='./dev/auth-provider/keycloak.sh')
+
 # lr('jaeger', serve_cmd='docker run --name=jaeger --rm -p5775:5775/udp -p6831:6831/udp -p6832:6832/udp -p5778:5778 -p16686:16686 -p14268:14268 jaegertracing/all-in-one:latest')
 lr('docsite', serve_cmd='.bin/docsite -config doc/docsite.json serve -http=localhost:5080')
 lr('lsif-server', serve_cmd='yarn --cwd lsif run run:server', deps=['cmd/lsif-server'] + shared_go_src, resource_deps=['schema'])
