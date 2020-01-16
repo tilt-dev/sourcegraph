@@ -11,17 +11,24 @@ def cmd_with_env(cmd):
   else:
     return cmd
 
+def go_lr(name, deps=[], resource_deps=[], serve_cmd=None, **kwargs):
+  cmd = 'dev/go-install.sh %s' % (name)
+  if not serve_cmd:
+    # for most go resources, the serve command is just the resource name
+    serve_cmd = name
+  lr(name, cmd, serve_cmd, deps + shared_go_src + ['cmd/%s' % (name), 'dev/go-install.sh'], resource_deps=resource_deps + ['schema'], **kwargs)
+
 def lr(name, cmd='', serve_cmd='', deps=[], **kwargs):
   local_resource(name, cmd_with_env(cmd), serve_cmd=cmd_with_env(serve_cmd), deps=deps + ['dev/env.sh'], **kwargs)
 
-lr('gitserver', cmd='./dev/go-install.sh gitserver', serve_cmd='gitserver', deps=['cmd/gitserver'] + shared_go_src, resource_deps=['schema'])
-lr('query-runner', cmd='./dev/go-install.sh query-runner', serve_cmd='query-runner', deps=['cmd/query-runner'] + shared_go_src, resource_deps=['schema'])
-lr('repo-updater', cmd='./dev/go-install.sh repo-updater', serve_cmd='repo-updater', deps=['cmd/repo-updater'] + shared_go_src, resource_deps=['schema'])
-lr('searcher', cmd='./dev/go-install.sh searcher', serve_cmd='searcher', deps=['cmd/searcher'] + shared_go_src, resource_deps=['schema'])
-lr('replacer', cmd='./dev/go-install.sh replacer', serve_cmd='replacer', deps=['cmd/replacer'] + shared_go_src, resource_deps=['schema'])
-lr('symbols', cmd='./dev/go-install.sh symbols', serve_cmd='./cmd/symbols/build.sh execute', deps=['cmd/symbols'] + shared_go_src, resource_deps=['schema'])
-lr('github-proxy', cmd='./dev/go-install.sh github-proxy', serve_cmd='github-proxy', deps=['cmd/github-proxy'] + shared_go_src, resource_deps=['schema'])
-lr('frontend', cmd='./dev/go-install.sh frontend', serve_cmd='env CONFIGURATION_MODE=server SITE_CONFIG_ESCAPE_HATCH_PATH=$HOME/.sourcegraph/site-config.json frontend', deps=['cmd/frontend'] + shared_go_src, resource_deps=['schema'])
+go_lr('gitserver')
+go_lr('query-runner')
+go_lr('repo-updater')
+go_lr('searcher',)
+go_lr('replacer')
+go_lr('symbols', serve_cmd='./cmd/symbols/build.sh execute')
+go_lr('github-proxy')
+go_lr('frontend', serve_cmd='env CONFIGURATION_MODE=server SITE_CONFIG_ESCAPE_HATCH_PATH=$HOME/.sourcegraph/site-config.json frontend')
 lr('nginx', serve_cmd="nginx -p . -g 'daemon off;' -c $PWD/dev/nginx.conf 2>&1 | grep -v 'could not open error log file'")
 lr('web', serve_cmd='./node_modules/.bin/gulp --color watch')
 lr('syntect_server', serve_cmd='./dev/syntect_server')
